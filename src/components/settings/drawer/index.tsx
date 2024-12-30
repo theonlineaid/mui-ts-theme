@@ -142,8 +142,8 @@ export default function SettingsDrawer() {
 
               <Divider sx={{ borderStyle: "dashed" }} />
               <Scrollbar>
-              <Stack spacing={3} sx={{ p: 3 }}>
-              
+                <Stack spacing={3} sx={{ p: 3 }}>
+
                   <Stack spacing={1.5}>
                     <Typography variant="caption">Direction</Typography>
                     <SettingDirection />
@@ -177,10 +177,10 @@ export default function SettingsDrawer() {
                     <SettingColorPresets />
                   </Stack>
 
-                <SettingFullscreen />
+                  <SettingFullscreen />
 
-               
-              </Stack>
+
+                </Stack>
               </Scrollbar>
             </RootStyle>
           </>

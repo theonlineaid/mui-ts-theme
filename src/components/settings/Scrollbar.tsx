@@ -1,7 +1,7 @@
 import { FC, ReactNode } from 'react';
 import SimpleBarReact from 'simplebar-react';
 // @mui
-import { alpha, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { Box, SxProps, Theme } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -10,29 +10,22 @@ const RootStyle = styled('div')(() => ({
   flexGrow: 1,
   height: '100%',
   overflowY: 'scroll',
+
+  // Thumb (the draggable part) styles
+  '&::-webkit-scrollbar-button': {
+    display: 'none',
+    width: 0,
+    height: 0
+  },
+
+  scrollbarWidth: 'thin',
 }));
 
-const SimpleBarStyle = styled(SimpleBarReact)(({ theme }) => ({
-  // maxHeight: '100%',
-  '& .simplebar-scrollbar': {
-    '&:before': {
-      backgroundColor: alpha(theme.palette.grey[600], 0.48),
-    },
-    '&.simplebar-visible:before': {
-      opacity: 1,
-    },
-  },
-  '& .simplebar-track.simplebar-vertical': {
-    width: 10,
-  },
-  '& .simplebar-track.simplebar-horizontal .simplebar-scrollbar': {
-    height: 6,
-  },
-  '& .simplebar-mask': {
-    zIndex: 'inherit',
-  },
+
+const SimpleBarStyle = styled(SimpleBarReact)(() => ({
   "& .simplebar-placeholder": {
     height: '0 !important',
+    borderRadius: 10,
   }
 }));
 
