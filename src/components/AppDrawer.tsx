@@ -17,10 +17,7 @@ import {
 } from '@mui/material';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -48,36 +45,6 @@ const closedMixin = (theme: Theme): CSSObject => ({
     },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-    open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-}));
-
 const Drawer = styled(MuiDrawer, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
@@ -100,35 +67,31 @@ export default function AppDrawer() {
     const [open, setOpen] = React.useState(false);
     const [submenuOpen, setSubmenuOpen] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [hoveredMenu, setHoveredMenu] = React.useState<string | null>(null);
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
+    const toggleDrawer = () => {
+        setOpen((prev) => !prev);
     };
 
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-
-    const handleSubmenuClick = () => {
-        setSubmenuOpen((prev) => !prev);
-    };
-
-    const handleMouseEnter = (
-        event: React.MouseEvent<HTMLElement>
-    ) => {
+    const handleMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
         if (!open) {
             setAnchorEl(event.currentTarget);
-            setSubmenuOpen(true); // Open submenu on hover
+            setSubmenuOpen(true);
         }
     };
 
-    const handleMouseLeave = (
-        event: React.MouseEvent<HTMLElement>
-    ) => {
-        if (!open) {
-            setAnchorEl(event.currentTarget);
-            setSubmenuOpen(true); // Open submenu on hover
+    const handleMouseLeave = () => {
+        if (!open && !anchorEl) {
+            setSubmenuOpen(false);
         }
+    };
+
+    const handleMenuItemHover = (item: string) => {
+        setHoveredMenu(item);
+    };
+
+    const handleMenuItemLeave = () => {
+        setHoveredMenu(null);
     };
 
     const submenuItems = ['Profile', 'Cards', 'List', 'Create', 'Edit', 'Account'];
@@ -136,28 +99,7 @@ export default function AppDrawer() {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{ marginRight: 5, ...(open && { display: 'none' }) }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Custom Drawer
-                    </Typography>
-                </Toolbar>
-            </AppBar>
             <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                    </IconButton>
-                </DrawerHeader>
                 <Divider />
                 <List>
                     <ListItem
@@ -166,18 +108,29 @@ export default function AppDrawer() {
                         disablePadding
                         sx={{ display: 'block' }}
                     >
-                        <ListItemButton onClick={handleSubmenuClick}>
-                            <ListItemIcon>
+                        <ListItemButton onClick={() => setSubmenuOpen((prev) => !prev)}>
+                            <ListItemIcon sx={{ mr: open ? 1 : 0 }}>
                                 <InboxIcon />
                             </ListItemIcon>
                             <ListItemText primary="User" sx={{ opacity: open ? 1 : 0 }} />
                             {submenuOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                            {/* <ExpandMoreIcon
+        sx={{
+            transform: submenuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s ease', // Smooth rotation
+        }}
+    /> */}
                         </ListItemButton>
-                        
-                        <Collapse in={open && submenuOpen} timeout="auto" unmountOnExit>
+
+                        <Collapse in={open && submenuOpen} >
                             <List component="div" disablePadding>
                                 {submenuItems.map((item, index) => (
-                                    <ListItemButton key={index} sx={{ pl: 4 }}>
+                                    <ListItemButton
+                                        key={index}
+                                        sx={{ pl: 4 }}
+                                        onMouseEnter={() => handleMenuItemHover(item)}
+                                        onMouseLeave={handleMenuItemLeave}
+                                    >
                                         <ListItemText primary={item} />
                                     </ListItemButton>
                                 ))}
@@ -186,23 +139,29 @@ export default function AppDrawer() {
                     </ListItem>
                 </List>
             </Drawer>
-            
-            {/* Popper to show the submenu items when hovering over the drawer (in mini state) */}
+
+            {/* Popper for mini drawer */}
             <Popper
-                open={!open && Boolean(anchorEl) && submenuOpen} // Keep the Popper open on hover
+                open={!open && Boolean(anchorEl) && submenuOpen}
                 anchorEl={anchorEl}
                 placement="right-start"
-                disablePortal={false} // So the Popper is part of the DOM tree, not moved to a separate node
-                style={{ zIndex: theme.zIndex.drawer + 1 }}
+                onMouseEnter={() => setSubmenuOpen(true)}
+                onMouseLeave={() => setSubmenuOpen(false)}
+                style={{ zIndex: theme.zIndex.drawer + 1, width: 220 }}
             >
                 <Paper sx={{ padding: 1, minWidth: 120, boxShadow: theme.shadows[3] }}>
                     {submenuItems.map((submenuItem, index) => (
                         <Typography
                             key={index}
+                            onMouseEnter={() => handleMenuItemHover(submenuItem)}
+                            onMouseLeave={handleMenuItemLeave}
                             sx={{
                                 padding: '8px 16px',
                                 cursor: 'pointer',
-                                '&:hover': { backgroundColor: theme.palette.action.hover },
+                                backgroundColor:
+                                    hoveredMenu === submenuItem
+                                        ? theme.palette.action.hover
+                                        : 'transparent',
                             }}
                         >
                             {submenuItem}
@@ -211,9 +170,21 @@ export default function AppDrawer() {
                 </Paper>
             </Popper>
 
-            {/* Main Content Area */}
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
+            {/* Main Content */}
+            <Box component="main" sx={{ flexGrow: 1 }}>
+                <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="toggle drawer"
+                        onClick={toggleDrawer}
+                        edge="start"
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography variant="h6" noWrap component="div">
+                        Custom Drawer
+                    </Typography>
+                </Toolbar>
                 <Typography>
                     Content goes here...
                 </Typography>
