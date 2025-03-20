@@ -1,18 +1,16 @@
-import PropTypes from 'prop-types';
-//
+import React, { ReactNode } from 'react';
+
 import SettingsDrawer from './drawer';
-//
 import ThemeContrast from './ThemeContrast';
-import ThemeRtlLayout from './ThemeRtlLayout';
 import ThemeColorPresets from './ThemeColorPresets';
+import ThemeRtlLayout from './ThemeRtlLayout';
 
-// ----------------------------------------------------------------------
+// Define the type for props
+interface ThemeSettingsProps {
+  children: ReactNode;  // children is of type ReactNode, which can be any renderable content
+}
 
-ThemeSettings.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-export default function ThemeSettings({ children }) {
+const ThemeSettings: React.FC<ThemeSettingsProps> = ({ children }) => {
   return (
     <ThemeColorPresets>
       <ThemeContrast>
@@ -23,4 +21,6 @@ export default function ThemeSettings({ children }) {
       </ThemeContrast>
     </ThemeColorPresets>
   );
-}
+};
+
+export default ThemeSettings;

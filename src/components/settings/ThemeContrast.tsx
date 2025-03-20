@@ -1,20 +1,18 @@
-import PropTypes from 'prop-types';
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 // @mui
 import { CssBaseline } from '@mui/material';
-import { alpha, ThemeProvider, createTheme, useTheme } from '@mui/material/styles';
+import { alpha, ThemeProvider, createTheme, useTheme, Theme } from '@mui/material/styles';
 // hooks
 import useSettings from '../../hooks/useSettings';
 //
 import componentsOverride from '../../theme/overrides';
 
-// ----------------------------------------------------------------------
+// Define the type for props
+interface ThemeContrastProps {
+  children: ReactNode;
+}
 
-ThemeContrast.propTypes = {
-  children: PropTypes.node,
-};
-
-export default function ThemeContrast({ children }) {
+export default function ThemeContrast({ children }: ThemeContrastProps) {
   const defaultTheme = useTheme();
 
   const { themeContrast } = useSettings();
@@ -53,11 +51,11 @@ export default function ThemeContrast({ children }) {
         },
       },
     }),
-
     [defaultTheme, themeContrast, styles.bgBold, styles.bgDefault, styles.cardBold, styles.cardDefault]
   );
 
-  const theme = createTheme(themeOptions);
+  // Type assertion here for `createTheme` to handle components
+  const theme = createTheme(themeOptions as Theme);
 
   theme.components = {
     ...componentsOverride(theme),

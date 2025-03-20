@@ -59,7 +59,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function AppDrawer() {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
     const [submenuOpen, setSubmenuOpen] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [hoveredMenu, setHoveredMenu] = React.useState<string | null>(null);
@@ -129,10 +129,10 @@ export default function AppDrawer() {
             {/* Main Content */}
             <Box component="main" sx={{ flexGrow: 1 }}>
                 <AppBar position="static"
-                    sx={{
-                        backgroundColor: theme.palette.mode === "dark" ? "#121212" : "#fff",
-                        color: theme.palette.mode === "dark" ? "#fff" : "#000",
-                    }}
+                    // sx={{
+                    //     backgroundColor: theme.palette.mode === "dark" ? "#121212" : "#fff",
+                    //     color: theme.palette.mode === "dark" ? "#fff" : "#000",
+                    // }}
                 >
                     <Toolbar sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
                         <IconButton

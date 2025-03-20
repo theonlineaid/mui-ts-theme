@@ -23,3 +23,21 @@
 //     };
 //   }
 // }
+
+
+import { Theme } from '@mui/material/styles';
+
+declare module '@mui/material/styles' {
+  interface Theme {
+    customShadows: {
+      primary: string;
+    };
+  }
+
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    customShadows?: {
+      primary: string;
+    };
+  }
+}

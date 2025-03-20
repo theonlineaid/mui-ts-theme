@@ -1,10 +1,8 @@
-import React from "react";
 import {
     MenuList,
     MenuItem,
     ListItemIcon,
-    ListItemText,
-    Box,
+    ListItemText
 } from "@mui/material";
 import Android from "@mui/icons-material/Android";
 import Html from "@mui/icons-material/Html";
@@ -39,7 +37,7 @@ export default function SideMenu() {
                     maxHeight: "93vh",
                 }}
                 forceVisible="y"
-                autoHide={false}
+                autoHide={true}
             >
                 <MenuList>
                     {fullMenu.map((item, index) => (
