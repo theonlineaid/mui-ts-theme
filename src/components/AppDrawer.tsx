@@ -5,24 +5,19 @@ import {
     CssBaseline,
     Toolbar,
     IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
+    AppBar,
     Divider,
     Paper,
-    Popper,
-    Collapse,
+    Popper
 } from '@mui/material';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Options from './Header/Options';
+import SideMenu from './Header/SideMenu';
+import SideBarLogo from './Header/SideBarLogo';
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const openedMixin = (theme: Theme): CSSObject => ({
     width: drawerWidth,
@@ -41,7 +36,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
     overflowX: 'hidden',
     width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
-        width: `calc(${theme.spacing(8)} + 1px)`,
+        width: `calc(${theme.spacing(11)} + 1px)`,
     },
 });
 
@@ -73,18 +68,6 @@ export default function AppDrawer() {
         setOpen((prev) => !prev);
     };
 
-    const handleMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
-        if (!open) {
-            setAnchorEl(event.currentTarget);
-            setSubmenuOpen(true);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        if (!open && !anchorEl) {
-            setSubmenuOpen(false);
-        }
-    };
 
     const handleMenuItemHover = (item: string) => {
         setHoveredMenu(item);
@@ -99,45 +82,18 @@ export default function AppDrawer() {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <Drawer variant="permanent" open={open}>
-                <Divider />
-                <List>
-                    <ListItem
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        disablePadding
-                        sx={{ display: 'block' }}
-                    >
-                        <ListItemButton onClick={() => setSubmenuOpen((prev) => !prev)}>
-                            <ListItemIcon sx={{ mr: open ? 1 : 0 }}>
-                                <InboxIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="User" sx={{ opacity: open ? 1 : 0 }} />
-                            {submenuOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                            {/* <ExpandMoreIcon
-        sx={{
-            transform: submenuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.3s ease', // Smooth rotation
-        }}
-    /> */}
-                        </ListItemButton>
-
-                        <Collapse in={open && submenuOpen} >
-                            <List component="div" disablePadding>
-                                {submenuItems.map((item, index) => (
-                                    <ListItemButton
-                                        key={index}
-                                        sx={{ pl: 4 }}
-                                        onMouseEnter={() => handleMenuItemHover(item)}
-                                        onMouseLeave={handleMenuItemLeave}
-                                    >
-                                        <ListItemText primary={item} />
-                                    </ListItemButton>
-                                ))}
-                            </List>
-                        </Collapse>
-                    </ListItem>
-                </List>
+            <Drawer variant="permanent" open={open} 
+            sx={{
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                    height: "100vh",  // Make sure drawer takes full height
+                    overflowY: "hidden",  // Hide the overflow outside the drawer
+                },
+            }}
+            
+            >
+                <SideBarLogo />
+                <SideMenu />
             </Drawer>
 
             {/* Popper for mini drawer */}
@@ -172,22 +128,25 @@ export default function AppDrawer() {
 
             {/* Main Content */}
             <Box component="main" sx={{ flexGrow: 1 }}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="toggle drawer"
-                        onClick={toggleDrawer}
-                        edge="start"
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Custom Drawer
-                    </Typography>
-                </Toolbar>
-                <Typography>
-                    Content goes here...
-                </Typography>
+                <AppBar position="static"
+                    sx={{
+                        backgroundColor: theme.palette.mode === "dark" ? "#121212" : "#fff",
+                        color: theme.palette.mode === "dark" ? "#fff" : "#000",
+                    }}
+                >
+                    <Toolbar sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="toggle drawer"
+                            onClick={toggleDrawer}
+                            edge="start"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+
+                        <Box>  <Options /></Box>
+                    </Toolbar>
+                </AppBar>
             </Box>
         </Box>
     );

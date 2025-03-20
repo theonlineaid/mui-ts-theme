@@ -5,6 +5,7 @@ import App from './App.tsx'
 import SettingsProvider from './contexts/SettingsContext.tsx'
 import ThemeProvider from './theme/index.tsx'
 import ThemeSettings from './components/settings/index.tsx'
+import 'simplebar-react/dist/simplebar.min.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
