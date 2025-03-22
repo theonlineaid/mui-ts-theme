@@ -1,11 +1,16 @@
 import React from "react";
-import {IconButton, Badge } from "@mui/material";
+import { IconButton, Badge } from "@mui/material";
 import { Search, Language, Notifications, Settings, AccountCircle, MoreVert } from "@mui/icons-material";
 
-const Options: React.FC = () => {
+// Define the props interface
+interface OptionsProps {
+    onSearchClick: () => void; // Function type for the search click event
+}
+
+const Options: React.FC<OptionsProps> = ({ onSearchClick }) => {
     return (
         <>
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={onSearchClick}>
                 <Search />
             </IconButton>
             <IconButton color="inherit">
