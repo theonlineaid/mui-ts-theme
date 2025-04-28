@@ -6,7 +6,6 @@ import {
     Toolbar,
     IconButton,
     AppBar,
-    Divider,
     Paper,
     Popper
 } from '@mui/material';
@@ -17,6 +16,7 @@ import Options from './Header/Options';
 import SideMenu from './Header/SideMenu';
 import SideBarLogo from './Header/SideBarLogo';
 import CustomDialog from './CustomDialog';
+import SearchRoute from './Header/SearchRoute';
 
 const drawerWidth = 300;
 
@@ -154,7 +154,9 @@ export default function AppDrawer() {
                             <MenuIcon />
                         </IconButton>
 
-                        <Box>        <Options onSearchClick={handleOpenDialog} /> </Box>
+                        <Box>
+                            <Options onSearchClick={handleOpenDialog} />
+                        </Box>
                     </Toolbar>
                 </AppBar>
             </Box>
@@ -167,9 +169,9 @@ export default function AppDrawer() {
                 maxWidth="sm"
                 height="400px"
                 isFullScreenButtonVisible={false}
-                // isDraggable={true}
+            // isDraggable={true}
             >
-                <div>Search functionality goes here...</div>
+                <SearchRoute />
             </CustomDialog>
         </Box>
     );

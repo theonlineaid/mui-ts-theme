@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Fade } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
+import Scrollbar from "./settings/Scrollbar";
 
 interface CustomDialogProps {
     title: string;
@@ -21,15 +22,14 @@ interface CustomDialogProps {
     onClose: () => void;
     onFullScreenChange?: (isFullScreen: boolean) => void;
     fullScreen?: boolean;
-    // New prop for setting specific height for small modals
-    height?: string | number;
+    height?: string | number; // New prop for setting specific height for small modals
 }
 
 const PaperComponent: React.FC = (props) => (
     <Draggable
         handle="#draggable-dialog-title"
         cancel={'[class*="MuiDialogContent-root"]'}
-        defaultPosition={{ x: window.innerWidth / 2 - 200, y: 50 }} 
+        defaultPosition={{ x: window.innerWidth / 2 - 200, y: 50 }}
     >
         <Paper {...props} />
     </Draggable>
@@ -91,7 +91,6 @@ const CustomDialog: React.FC<CustomDialogProps> = ({
 
     const dialogStyles = useMemo(() => ({
         height: isFullScreen ? `calc(97vh - ${headerHeight}px)` : height, // Subtract header height in fullscreen
-        overflowY: "auto", // Always enable scroll
         maxHeight: isFullScreen ? `calc(97vh - ${headerHeight}px)` : "none", // Prevent fullscreen dialog from exceeding viewport height
     }), [isFullScreen, height]);
 
@@ -144,9 +143,11 @@ const CustomDialog: React.FC<CustomDialogProps> = ({
                         </IconButton>
                     </Box>
                 </Box>
-                <DialogContent sx={{ p: 0 }} style={dialogStyles as React.CSSProperties}>
-                    {children}
-                </DialogContent>
+                <Scrollbar>
+                    <DialogContent sx={{ p: 0 }} style={dialogStyles as React.CSSProperties}>
+                        {children}
+                    </DialogContent>
+                </Scrollbar>
             </Box>
         </Dialog>
     );
